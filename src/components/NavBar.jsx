@@ -1,6 +1,11 @@
 import React from 'react'
+import Employee from '../pages/Employee';
+import { Navigate, useNavigate } from 'react-router-dom';
+import Home from '../pages/Home';
 
 function Navbar() {
+  const navigate = useNavigate()
+
   return (
     <nav className="w-full bg-white shadow-md px-8 py-4 flex items-center justify-between">
       
@@ -26,7 +31,9 @@ function Navbar() {
         </div>
 
         {/* Title */}
-        <div>
+        <div onClick={()=>{
+          navigate("/home")
+        }}>
           <h1 className="text-2xl font-bold text-black">
             EMS Dashboard
           </h1>
@@ -40,11 +47,25 @@ function Navbar() {
       {/* Right Side */}
       <div className="flex items-center gap-6 ">
 
-        <button className="text-gray-600 hover:text-black transition cursor-pointer">
+        <button className="text-gray-600 hover:text-black transition cursor-pointer"
+        onClick={()=>{
+          navigate("/home")
+        }}>
+          Home
+        </button>
+
+        <button className="text-gray-600 hover:text-black transition cursor-pointer"
+        onClick={()=>{
+          navigate("/dashboard")
+        }}>
           Dashboard
         </button>
 
-        <button className="text-gray-600 hover:text-black transition cursor-pointer">
+        <button className="text-gray-600 hover:text-black transition cursor-pointer"
+        onClick={()=>{
+          console.log("clicked");
+          navigate("/employee")
+        }}>
           Employees
         </button>
 

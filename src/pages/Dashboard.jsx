@@ -1,12 +1,15 @@
 import { useState } from "react";
-
-import Navbar from "../components/Navbar";
+import Navbar from "../components/NavBar";
 import Footer from "../components/Footer";
+import { useDispatch,useSelector } from "react-redux";
+import { addEmployee,deleteEmployee, updateEmployee } from "../store/employeeslice";
 
 function Dashboard() {
-
+  const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
-
+  const employees = useSelector(
+    (state) => state.employee.employees
+  );
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -14,30 +17,48 @@ function Dashboard() {
   const [salary, setSalary] = useState("");
 
 
-  const [employees, setEmployees] = useState([]);
 
-
-
-  const handleSaveEmployee = () =>{
+  const [editingEmployee, setEditingEmployee] = useState(null);
+  const handleSaveEmployee = () => {
     const newEmployee = {
-      id:Date.now(),
       name,
       email,
       department,
       salary,
     };
 
-
-    setEmployees([...employees,newEmployee]);
+    if(editingEmployee){
+      dispatch(
+        updateEmployee({
+          id: editingEmployee.id,
+          name,
+          email,
+          department,
+          salary,
+        })
+      );
+    } else{
+        dispatch(addEmployee(newEmployee));
+    }
+    setEditingEmployee(null);
     setName("");
     setEmail("");
     setDepartment("");
     setSalary("");
-
     setShowModal(false);
+  };
+
+  const handleDelete = (id) =>{
+    dispatch(deleteEmployee(id))
   }
-
-
+  const handleEdit = (emp) =>{
+    setShowModal(true);
+    setEmail(emp.email)
+    setName(emp.name)
+    setSalary(emp.salary)
+    setDepartment(emp.department);
+    setEditingEmployee(emp);
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
@@ -71,34 +92,20 @@ function Dashboard() {
         </div>
 
         {/* Employee Table */}
-        <div className="bg-white rounded-2xl shadow-md overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-md overflow-hidden w-full">
 
-          <table className="w-full">
+          <table className="w-full table-fixed">
 
             <thead className="bg-black text-white">
-
               <tr>
-                <th className="text-left px-6 py-4">
-                  Employee
-                </th>
-
-                <th className="text-left px-6 py-4">
-                  Email
-                </th>
-
-                <th className="text-left px-6 py-4">
-                  Department
-                </th>
-
-                <th className="text-left px-6 py-4">
-                  Salary
-                </th>
-
-                <th className="text-left px-6 py-4">
-                  Status
-                </th>
+                <th className="text-left px-6 py-4">Employee</th>
+                <th className="text-left px-6 py-4">Email</th>
+                <th className="text-left px-6 py-4">Department</th>
+                <th className="text-left px-6 py-4">Salary</th>
+                <th className="text-left px-6 py-4">Status</th>
+                <th className="text-left px-6 py-4">Delete</th>
+                <th className="text-left px-6 py-4">Edit</th>
               </tr>
-
             </thead>
 
             <tbody>
@@ -143,6 +150,16 @@ function Dashboard() {
                           <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
                             Active
                           </span>
+                        </td>
+                        <td className="px-6 py-5">
+                          <button onClick={()=>{handleDelete(emp.id)}} className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
+                            Delete
+                          </button>
+                        </td>
+                        <td className="px-6 py-5">
+                          <button onClick={()=>{handleEdit(emp)}} className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
+                            Edit
+                          </button>
                         </td>
 
                       </tr>
