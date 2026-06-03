@@ -17,7 +17,7 @@ import { persistor } from "./store/store";
 const router = createBrowserRouter([
   {
     path:'/',
-    element: <Navigate to="/login"/>
+    element: <Navigate to="/home"/>
   },
   {
     path:'/login',
